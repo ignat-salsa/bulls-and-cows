@@ -1,375 +1,1896 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SAFE PRO</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
-  body{font-family:-apple-system,"SF Pro",sans-serif;background:radial-gradient(circle at 50% -10%,#1a1a2e,#08080d);color:#fff;height:100vh;display:flex;flex-direction:column;align-items:center;padding:8px 12px;overflow:hidden;}
-  h1{font-size:1.3em;font-weight:800;letter-spacing:2px;background:linear-gradient(90deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .coins{background:linear-gradient(90deg,#3a2f0a,#4a3a0f);border:1.5px solid #ffd700;border-radius:12px;padding:4px 16px;font-size:.9em;font-weight:800;color:#ffd700;margin:4px 0;box-shadow:0 0 20px rgba(255,215,0,.2);}
-  .coins.bump{animation:bump .4s ease;}
-  @keyframes bump{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
-  .topbar{display:flex;gap:6px;margin-bottom:8px;align-items:center;}
-  .chip{background:#15151f;border:1px solid #2a2a3a;border-radius:9px;padding:5px 10px;font-size:.7em;color:#999;}
-  .chip b{color:#ffd700;}
-  .help{background:#15151f;border:1px solid #2a2a3a;border-radius:50%;width:30px;height:30px;color:#ffd700;font-size:1em;cursor:pointer;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>SAFE PRO</title>
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-  /* ===== БОЛЬШОЙ СЕЙФ ===== */
-  .safe-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:8px;position:relative;}
-  .safe{width:270px;height:230px;border-radius:22px;background:linear-gradient(145deg,#5a4a20,#2a2210);border:5px solid #ffd700;box-shadow:0 8px 30px rgba(0,0,0,.7),inset 0 3px 12px rgba(255,215,0,.25),inset 0 -4px 12px rgba(0,0,0,.5);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;transition:.4s;}
-  .bolt{position:absolute;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle,#ffe680,#997a00);box-shadow:inset 0 1px 1px rgba(255,255,255,.5);}
-  .bolt.tl{top:10px;left:10px;}.bolt.tr{top:10px;right:10px;}.bolt.bl{bottom:10px;left:10px;}.bolt.br{bottom:10px;right:10px;}
-  .display{background:#0a0a0e;border:3px solid #1a1a10;border-radius:14px;padding:10px 12px;display:flex;gap:8px;box-shadow:inset 0 3px 10px rgba(0,0,0,.9),0 0 14px rgba(255,215,0,.15);margin-bottom:14px;}
-  .cell{width:46px;height:60px;border-radius:9px;background:linear-gradient(#12120a,#080805);border:2px solid #2a2410;display:flex;align-items:center;justify-content:center;font-size:2em;font-weight:800;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.6);transition:.15s;cursor:pointer;font-family:"Courier New",monospace;}
-  .cell.active{border-color:#ffd700;box-shadow:0 0 16px rgba(255,215,0,.6),inset 0 0 8px rgba(255,215,0,.3);}
-  .handle{width:70px;height:70px;border-radius:50%;background:conic-gradient(#ffe680,#997a00,#ffe680,#997a00,#ffe680);border:6px solid #3a2f0a;position:relative;box-shadow:inset 0 0 14px rgba(0,0,0,.6),0 4px 10px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
-  .handle::before{content:"";position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,#ffe680,#8a7000);box-shadow:inset 0 0 8px rgba(0,0,0,.5);}
-  .handle::after{content:"";position:absolute;top:-4px;left:50%;width:5px;height:22px;background:#c00;transform:translateX(-50%);border-radius:3px;box-shadow:0 0 6px rgba(255,0,0,.5);}
-  .treasure{display:none;font-size:2.5em;text-align:center;}
-  .treasure small{display:block;font-size:.28em;color:#ffd700;margin-top:6px;letter-spacing:1px;}
-  .safe.open{background:linear-gradient(145deg,#2a4a2a,#1a3a1a);border-color:#00e676;box-shadow:0 0 50px rgba(0,230,118,.5);}
-  .safe.open .display,.safe.open .handle{display:none;}
-  .safe.open .treasure{display:block;animation:pop .6s ease;}
-  .safe.alarm{border-color:#ff3b30;box-shadow:0 0 40px rgba(255,59,48,.6);animation:shake .3s;}
-  @keyframes pop{0%{transform:scale(0);}70%{transform:scale(1.3);}100%{transform:scale(1);}}
-  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+    html,body{
+      height:100%;
+    }
 
-  .warn{color:#ff3b30;font-size:.72em;height:14px;margin-bottom:4px;opacity:0;transition:.2s;}
-  .warn.show{opacity:1;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+      color:#fff;
+      min-height:100vh;
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      padding:5px 9px 7px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,196,0,.11), transparent 22%),
+        radial-gradient(circle at 15% 20%, rgba(255,170,0,.07), transparent 20%),
+        radial-gradient(circle at 85% 16%, rgba(255,215,0,.05), transparent 18%),
+        linear-gradient(180deg,#07101f 0%, #04070f 48%, #02040a 100%);
+      position:relative;
+    }
 
-  .keypad{width:100%;max-width:270px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px;}
-  .key{background:linear-gradient(145deg,#22222e,#16161f);border:1px solid #33333f;border-radius:11px;padding:11px 0;font-size:1.35em;font-weight:700;color:#fff;text-align:center;cursor:pointer;transition:.1s;user-select:none;}
-  .key:active{transform:scale(.94);background:#2a2a38;}
-  .key.act{background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;}
-  .key.del{color:#ff8c00;}
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size:26px 26px;
+      mask-image:linear-gradient(180deg, rgba(255,255,255,.28), transparent 92%);
+    }
 
-  .list-title{color:#555;font-size:.62em;letter-spacing:2px;align-self:flex-start;max-width:270px;margin:2px auto 3px;width:100%;padding-left:4px;}
-  .list{width:100%;max-width:270px;flex:1;overflow-y:auto;padding-right:4px;min-height:0;}
-  .list::-webkit-scrollbar{width:5px;}
-  .list::-webkit-scrollbar-thumb{background:#2a2a3a;border-radius:3px;}
-  .row{display:flex;justify-content:space-between;align-items:center;background:#15151f;border:1px solid #23232f;border-radius:9px;padding:6px 14px;margin-bottom:4px;animation:slide .3s ease;}
-  @keyframes slide{from{opacity:0;transform:translateY(-8px);}to{opacity:1;}}
-  .code{font-size:1.05em;font-weight:700;letter-spacing:4px;}
-  .tags{display:flex;gap:10px;font-size:.8em;}
-  .right{color:#ffd700;font-weight:700;}
-  .near{color:#ff8c00;font-weight:700;}
-  .win{border-color:#ffd700;background:#2a2410;}
-  .win .code{color:#ffd700;}
-  .win .msg{font-size:.78em;color:#ffd700;font-weight:700;letter-spacing:0;}
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(255,188,0,.11), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(255,160,0,.05), transparent 20%);
+      filter:blur(18px);
+    }
 
-  .overlay{position:fixed;inset:0;background:rgba(5,5,10,.95);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
-  .overlay.show{display:flex;animation:fade .4s;}
-  @keyframes fade{from{opacity:0;}to{opacity:1;}}
-  .landing{text-align:center;max-width:420px;animation:up .5s ease;}
-  @keyframes up{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
-  .landing .big-safe{font-size:4em;margin-bottom:8px;animation:float 3s ease-in-out infinite;}
-  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
-  .landing h2{font-size:2.2em;font-weight:900;letter-spacing:4px;margin-bottom:6px;background:linear-gradient(90deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .landing .tag{color:#aaa;font-size:.95em;margin-bottom:18px;line-height:1.5;}
-  .features{display:flex;flex-direction:column;gap:9px;margin-bottom:22px;}
-  .feat{background:#15151f;border:1px solid #23232f;border-radius:12px;padding:12px 16px;text-align:left;display:flex;gap:12px;align-items:center;}
-  .feat .ic{font-size:1.4em;}.feat .tx{font-size:.88em;color:#ccc;}.feat .tx b{color:#fff;}
-  .play-btn{font-size:1.2em;font-weight:800;padding:15px 55px;letter-spacing:2px;background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;border:none;border-radius:14px;box-shadow:0 0 30px rgba(255,140,0,.4);animation:pulse 2s infinite;cursor:pointer;}
-  @keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(255,140,0,.4);}50%{box-shadow:0 0 45px rgba(255,140,0,.7);}}
-  .rules-link{display:block;margin-top:14px;color:#777;font-size:.85em;cursor:pointer;text-decoration:underline;}
-  .modal{background:#15151f;border:2px solid #ffd700;border-radius:20px;max-width:400px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;text-align:left;animation:up .4s ease;}
-  .modal h2{color:#ffd700;margin-bottom:14px;font-size:1.35em;}
-  .modal h3{color:#ff8c00;margin:16px 0 7px;font-size:1em;}
-  .modal p,.modal li{color:#ccc;line-height:1.6;font-size:.9em;margin-bottom:6px;}
-  .modal ul{padding-left:20px;}
-  .modal .close{width:100%;margin-top:18px;background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;border:none;border-radius:11px;padding:12px;font-weight:700;font-size:.9em;cursor:pointer;}
-  .ex{background:#0d0d14;border-radius:10px;padding:11px;margin:8px 0;font-size:.85em;}
-  .hint-box{background:#1a2410;border:1px solid #3a4a1a;border-radius:10px;padding:9px 13px;margin:8px 0;font-size:.85em;color:#c8e0a0;}
-</style>
+    .app{
+      width:100%;
+      max-width:398px;
+      height:100%;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      z-index:2;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      margin:0 0 5px;
+      flex:none;
+    }
+
+    .brand .logo{
+      font-size:1.15rem;
+      filter:drop-shadow(0 0 8px rgba(255,215,0,.18));
+    }
+
+    .brand .title{
+      font-size:1.4rem;
+      font-weight:1000;
+      letter-spacing:1px;
+      background:linear-gradient(90deg,#ffd700 0%, #ffbe00 55%, #ff9a00 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .topbar{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:7px;
+      margin-bottom:7px;
+      flex:none;
+    }
+
+    .top-card{
+      min-height:41px;
+      border-radius:14px;
+      border:1px solid rgba(255,215,0,.12);
+      background:linear-gradient(180deg,rgba(20,24,35,.92),rgba(10,13,21,.95));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:0 12px;
+      font-weight:900;
+      font-size:.88rem;
+      color:#edf0f6;
+      box-shadow:
+        0 6px 16px rgba(0,0,0,.2),
+        inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .top-card b{
+      color:#ffd700;
+    }
+
+    .coin-card{
+      min-width:114px;
+      border:1px solid rgba(255,215,0,.5);
+      background:linear-gradient(180deg,rgba(77,62,17,.95),rgba(33,25,8,.96));
+      box-shadow:
+        0 0 14px rgba(255,215,0,.07),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .menu-btn{
+      width:41px;
+      height:41px;
+      border:none;
+      border-radius:14px;
+      border:1px solid rgba(255,215,0,.12);
+      background:linear-gradient(180deg,#1b2130,#111621);
+      color:#e9ecf2;
+      font-size:.95rem;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.2);
+    }
+
+    .screen{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+
+    .vault{
+      flex:none;
+      border-radius:24px;
+      border:2px solid rgba(255,215,0,.52);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.14), transparent 25%),
+        linear-gradient(145deg,#434952 0%, #2a2f38 22%, #1b1f27 52%, #12161e 75%, #0d1017 100%);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,.4),
+        inset 0 2px 0 rgba(255,255,255,.08),
+        inset 0 -10px 18px rgba(0,0,0,.38),
+        0 0 14px rgba(255,196,0,.05);
+      padding:9px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .vault::before{
+      content:"";
+      position:absolute;
+      inset:4px;
+      border-radius:19px;
+      border:1px solid rgba(255,255,255,.05);
+      pointer-events:none;
+    }
+
+    .vault::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(140deg, rgba(255,255,255,.10), transparent 16%, transparent 68%, rgba(255,255,255,.03)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 2px, transparent 2px 18px);
+      opacity:.5;
+    }
+
+    .rivet{
+      position:absolute;
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 35% 35%, #fff6bf 0%, #b9a057 28%, #6b571b 62%, #352b0f 100%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.4),
+        0 0 5px rgba(255,215,0,.12);
+      z-index:4;
+    }
+
+    .r1{top:9px;left:9px;}
+    .r2{top:9px;right:9px;}
+    .r3{bottom:9px;left:9px;}
+    .r4{bottom:9px;right:9px;}
+    .r5{top:50%;left:9px;transform:translateY(-50%);}
+    .r6{top:50%;right:9px;transform:translateY(-50%);}
+
+    .vault-inner{
+      position:relative;
+      z-index:2;
+      border-radius:18px;
+      padding:7px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.015)),
+        linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.22));
+      border:1px solid rgba(255,255,255,.05);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .vault-door{
+      position:relative;
+      border-radius:18px;
+      padding:8px;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(255,255,255,.08), transparent 22%),
+        linear-gradient(145deg,#555d69 0%, #353b44 24%, #1a1f27 58%, #10141b 100%);
+      border:2px solid rgba(255,215,0,.66);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 -8px 14px rgba(0,0,0,.34),
+        0 6px 14px rgba(0,0,0,.2);
+      transition:transform 1s cubic-bezier(.2,.9,.2,1), box-shadow .35s ease;
+      transform-origin:left center;
+      transform-style:preserve-3d;
+    }
+
+    .vault.open .vault-door{
+      transform:rotateY(-104deg);
+      box-shadow:-14px 8px 24px rgba(0,0,0,.5);
+    }
+
+    .hinge{
+      position:absolute;
+      left:-4px;
+      top:12px;
+      bottom:12px;
+      width:8px;
+      border-radius:8px;
+      background:linear-gradient(180deg,#766427,#44360e,#211a07);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.15);
+      z-index:3;
+    }
+
+    .hinge::before,
+    .hinge::after{
+      content:"";
+      position:absolute;
+      left:1px;
+      width:6px;
+      height:18px;
+      border-radius:6px;
+      background:linear-gradient(180deg,#b19143,#6f5618,#362a0d);
+    }
+
+    .hinge::before{top:18px;}
+    .hinge::after{bottom:18px;}
+
+    .inside{
+      position:absolute;
+      inset:9px;
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255,215,0,.10), transparent 26%),
+        linear-gradient(180deg,#050607,#020304 100%);
+      border:1px solid rgba(255,215,0,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      z-index:1;
+    }
+
+    .inside-glow{
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      background:rgba(255,215,0,.12);
+      filter:blur(28px);
+      position:absolute;
+    }
+
+    .loot{
+      position:relative;
+      z-index:2;
+      text-align:center;
+      opacity:0;
+      transform:scale(.88);
+      transition:.5s ease .3s;
+    }
+
+    .vault.open .loot{
+      opacity:1;
+      transform:scale(1);
+    }
+
+    .loot .emoji{
+      font-size:1.8rem;
+      margin-bottom:4px;
+    }
+
+    .loot .text{
+      font-weight:1000;
+      color:#ffd700;
+      font-size:.78rem;
+    }
+
+    .door-grid{
+      position:relative;
+      z-index:3;
+      display:grid;
+      grid-template-columns:1fr 62px;
+      gap:8px;
+      align-items:center;
+      min-height:120px;
+    }
+
+    .display-wrap{
+      border-radius:15px;
+      padding:8px;
+      border:2px solid rgba(255,215,0,.35);
+      background:linear-gradient(180deg,#141912,#050805);
+      box-shadow:
+        inset 0 6px 14px rgba(0,0,0,.72),
+        0 0 10px rgba(255,215,0,.05);
+    }
+
+    .display{
+      display:flex;
+      justify-content:center;
+      gap:6px;
+    }
+
+    .cell{
+      width:38px;
+      height:62px;
+      border-radius:10px;
+      border:2px solid rgba(255,215,0,.15);
+      background:linear-gradient(180deg,#061007,#020402);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#ffd700;
+      font-size:1.55rem;
+      font-weight:1000;
+      font-family:"Courier New",monospace;
+      text-shadow:0 0 10px rgba(255,215,0,.34);
+      transition:.14s ease;
+      cursor:pointer;
+    }
+
+    .cell.active{
+      border-color:#ffd700;
+      box-shadow:
+        0 0 12px rgba(255,215,0,.26),
+        inset 0 0 8px rgba(255,215,0,.08);
+    }
+
+    .wheel{
+      width:62px;
+      height:62px;
+      border-radius:50%;
+      position:relative;
+      background:
+        radial-gradient(circle at 35% 35%, #9ea5af 0%, #66707d 28%, #2e3540 62%, #171b22 100%);
+      border:2px solid rgba(255,215,0,.48);
+      box-shadow:
+        inset 0 2px 5px rgba(255,255,255,.18),
+        inset 0 -6px 10px rgba(0,0,0,.38),
+        0 0 10px rgba(255,215,0,.08);
+      margin:0 auto;
+    }
+
+    .wheel::before{
+      content:"";
+      position:absolute;
+      inset:13px;
+      border-radius:50%;
+      border:2px solid rgba(255,215,0,.45);
+    }
+
+    .wheel::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      transform:translate(-50%,-50%);
+      background:radial-gradient(circle,#d8dde4,#5a6572);
+      box-shadow:inset 0 1px 2px rgba(255,255,255,.26);
+    }
+
+    .spoke{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:4px;
+      height:18px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#d8dde2,#7f8994,#424a54);
+      transform-origin:center calc(100% - 2px);
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.25);
+    }
+
+    .s1{transform:translate(-50%,-100%) rotate(0deg);}
+    .s2{transform:translate(-50%,-100%) rotate(60deg);}
+    .s3{transform:translate(-50%,-100%) rotate(120deg);}
+    .s4{transform:translate(-50%,-100%) rotate(180deg);}
+    .s5{transform:translate(-50%,-100%) rotate(240deg);}
+    .s6{transform:translate(-50%,-100%) rotate(300deg);}
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .stat{
+      min-height:34px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(180deg,rgba(15,18,28,.88),rgba(10,12,19,.92));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:0 4px;
+      color:#bec4d1;
+      font-size:.7rem;
+      font-weight:800;
+    }
+
+    .stat b{
+      color:#ffd700;
+      margin-left:4px;
+    }
+
+    .warn{
+      min-height:12px;
+      text-align:center;
+      color:#ff6464;
+      font-size:.7rem;
+      opacity:0;
+      transition:.2s ease;
+      flex:none;
+    }
+
+    .warn.show{
+      opacity:1;
+    }
+
+    .keypad{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:7px;
+      flex:none;
+    }
+
+    .key{
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.07);
+      background:linear-gradient(180deg,#232938 0%, #151a24 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.18rem;
+      font-weight:1000;
+      color:#f2f4f8;
+      cursor:pointer;
+      user-select:none;
+      box-shadow:
+        0 6px 14px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.04);
+      transition:.12s ease;
+    }
+
+    .key:active{
+      transform:scale(.96);
+    }
+
+    .key.del{
+      color:#ffab2e;
+    }
+
+    .key.go{
+      background:linear-gradient(90deg,#ffd400,#ffad00);
+      color:#1a1a1a;
+      border-color:rgba(255,215,0,.34);
+      box-shadow:0 0 14px rgba(255,185,0,.12);
+    }
+
+    .history{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      border-radius:18px;
+      border:1px solid rgba(255,215,0,.10);
+      background:linear-gradient(180deg,rgba(15,18,28,.90),rgba(8,10,16,.95));
+      overflow:hidden;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .history-head{
+      flex:none;
+      min-height:36px;
+      display:flex;
+      align-items:center;
+      padding:0 12px;
+      color:#9aa3b4;
+      letter-spacing:2px;
+      font-size:.66rem;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+
+    .list{
+      flex:1;
+      min-height:0;
+      overflow-y:auto;
+      padding:8px;
+    }
+
+    .list::-webkit-scrollbar{
+      width:5px;
+    }
+
+    .list::-webkit-scrollbar-thumb{
+      background:#30384b;
+      border-radius:999px;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:9px 10px;
+      margin-bottom:7px;
+      border-radius:12px;
+      border:1px solid #2b3243;
+      background:rgba(18,21,34,.95);
+      animation:slide .22s ease;
+    }
+
+    @keyframes slide{
+      from{opacity:0;transform:translateY(-8px);}
+      to{opacity:1;transform:translateY(0);}
+    }
+
+    .code{
+      font-size:.94rem;
+      font-weight:1000;
+      letter-spacing:3px;
+      color:#eef2f8;
+    }
+
+    .tags{
+      display:flex;
+      gap:8px;
+      font-weight:1000;
+      white-space:nowrap;
+      font-size:.82rem;
+    }
+
+    .right{
+      color:#ffe100;
+    }
+
+    .near{
+      color:#ff9f0a;
+    }
+
+    .row.win{
+      border-color:#ffd700;
+      background:linear-gradient(145deg,#2b250e,#181407);
+      box-shadow:0 0 12px rgba(255,215,0,.08);
+    }
+
+    .row.win .msg{
+      color:#ffd700;
+      font-weight:1000;
+      font-size:.82rem;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:200;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:linear-gradient(180deg,rgba(6,8,14,.70),rgba(4,5,9,.92));
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .overlay.show{
+      display:flex;
+    }
+
+    .card{
+      width:100%;
+      max-width:420px;
+      border-radius:28px;
+      border:1px solid rgba(255,215,0,.18);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,215,0,.10), transparent 34%),
+        linear-gradient(180deg,rgba(19,22,33,.98),rgba(12,14,22,.98));
+      box-shadow:0 24px 70px rgba(0,0,0,.44);
+      padding:24px 20px;
+      max-height:90vh;
+      overflow-y:auto;
+    }
+
+    .landing{
+      text-align:center;
+    }
+
+    .landing .hero-logo{
+      width:92px;
+      height:92px;
+      border-radius:24px;
+      border:3px solid #ffd700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 14px;
+      font-size:2.8rem;
+      background:linear-gradient(145deg,#5d4b19,#2c220c);
+      box-shadow:0 0 20px rgba(255,215,0,.14);
+    }
+
+    .landing h1{
+      font-size:2.2rem;
+      font-weight:1000;
+      margin-bottom:10px;
+      background:linear-gradient(90deg,#ffd700,#ff9800);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      letter-spacing:2px;
+    }
+
+    .landing p{
+      color:#cfd3dd;
+      line-height:1.55;
+      margin-bottom:18px;
+      font-size:1rem;
+    }
+
+    .landing-feats{
+      display:grid;
+      gap:10px;
+      margin-bottom:18px;
+      text-align:left;
+    }
+
+    .lf{
+      border-radius:16px;
+      padding:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.06);
+      color:#d6d9e2;
+      line-height:1.45;
+    }
+
+    .lf b{
+      color:#fff;
+    }
+
+    .cta{
+      width:100%;
+      min-height:54px;
+      border:none;
+      border-radius:18px;
+      background:linear-gradient(90deg,#ffd400,#ff9d00);
+      color:#1a1a1a;
+      font-size:1rem;
+      font-weight:1000;
+      cursor:pointer;
+      box-shadow:0 0 24px rgba(255,153,0,.20);
+    }
+
+    .mini-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .ghost{
+      min-height:46px;
+      border:none;
+      border-radius:15px;
+      background:linear-gradient(180deg,#1c2230,#121722);
+      border:1px solid #2f3648;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .modal h2{
+      color:#ffd700;
+      margin-bottom:12px;
+    }
+
+    .modal h3{
+      color:#ffb000;
+      margin:14px 0 8px;
+      font-size:1rem;
+    }
+
+    .modal p,.modal li{
+      color:#d1d5de;
+      line-height:1.55;
+      font-size:.95rem;
+      margin-bottom:6px;
+    }
+
+    .modal ul{
+      padding-left:18px;
+    }
+
+    .close-btn{
+      width:100%;
+      min-height:48px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(90deg,#ffd400,#ff9d00);
+      color:#1a1a1a;
+      font-weight:1000;
+      cursor:pointer;
+      margin-top:14px;
+    }
+
+    .input{
+      width:100%;
+      min-height:50px;
+      border-radius:14px;
+      border:1px solid #2f3648;
+      background:#0d1119;
+      color:#fff;
+      padding:0 14px;
+      outline:none;
+      font-size:1rem;
+      margin-top:10px;
+    }
+
+    .sheet{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:220;
+      padding:0 12px 12px;
+      transform:translateY(110%);
+      transition:transform .28s ease;
+      pointer-events:none;
+    }
+
+    .sheet.show{
+      transform:translateY(0);
+      pointer-events:auto;
+    }
+
+    .sheet-card{
+      max-width:430px;
+      margin:0 auto;
+      border-radius:24px 24px 18px 18px;
+      border:1px solid #2d3446;
+      background:linear-gradient(180deg,#171b26,#10131b);
+      box-shadow:0 -16px 42px rgba(0,0,0,.38);
+      padding:12px 14px 16px;
+    }
+
+    .sheet-handle{
+      width:56px;
+      height:5px;
+      border-radius:999px;
+      background:#3a4153;
+      margin:2px auto 12px;
+    }
+
+    .sheet-title{
+      text-align:center;
+      color:#ffd700;
+      font-weight:1000;
+      margin-bottom:12px;
+    }
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .menu-item{
+      border:none;
+      text-align:left;
+      border-radius:15px;
+      padding:12px;
+      background:linear-gradient(180deg,#1c2130,#121722);
+      border:1px solid #2d3446;
+      color:#f2f3f7;
+      cursor:pointer;
+    }
+
+    .menu-item .t{
+      font-weight:1000;
+      margin-bottom:4px;
+      font-size:.93rem;
+    }
+
+    .menu-item .s{
+      color:#9ea5b6;
+      font-size:.77rem;
+      line-height:1.35;
+    }
+
+    .line{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid #2b3142;
+      color:#dde1ea;
+      margin-bottom:10px;
+    }
+
+    .line b{
+      color:#ffd700;
+    }
+
+    .switch{
+      width:56px;
+      height:32px;
+      border:none;
+      border-radius:999px;
+      background:#2f3546;
+      position:relative;
+      cursor:pointer;
+    }
+
+    .switch::after{
+      content:"";
+      position:absolute;
+      top:4px;
+      left:4px;
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:#fff;
+      transition:.2s ease;
+    }
+
+    .switch.on{
+      background:#ffd700;
+    }
+
+    .switch.on::after{
+      left:28px;
+      background:#1a1a1a;
+    }
+
+    .win-overlay{
+      position:fixed;
+      inset:0;
+      z-index:260;
+      background:linear-gradient(180deg,rgba(6,8,12,.46),rgba(6,8,12,.84));
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+
+    .win-overlay.show{
+      display:flex;
+    }
+
+    .win-card{
+      width:100%;
+      max-width:410px;
+      border-radius:28px;
+      border:1px solid rgba(255,215,0,.22);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,215,0,.16), transparent 32%),
+        linear-gradient(180deg,#181b27,#10131b);
+      box-shadow:0 28px 80px rgba(0,0,0,.48);
+      padding:24px 20px;
+      text-align:center;
+    }
+
+    .win-card h2{
+      color:#ffd700;
+      font-size:1.9rem;
+      margin-bottom:8px;
+    }
+
+    .win-card p{
+      color:#d0d4de;
+      line-height:1.55;
+      margin-bottom:14px;
+    }
+
+    .rank-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,215,0,.10);
+      border:1px solid rgba(255,215,0,.22);
+      color:#ffd700;
+      font-weight:1000;
+      margin-bottom:14px;
+    }
+
+    .win-stats{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .win-box{
+      border-radius:16px;
+      padding:14px 10px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .win-box .k{
+      color:#9ea5b6;
+      font-size:.8rem;
+      margin-bottom:4px;
+    }
+
+    .win-box .v{
+      color:#ffd700;
+      font-size:1.2rem;
+      font-weight:1000;
+    }
+
+    .win-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .particle-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:255;
+      overflow:hidden;
+    }
+
+    .particle{
+      position:absolute;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#ffd700;
+      box-shadow:0 0 12px rgba(255,215,0,.7);
+      animation:particleFly 1s ease-out forwards;
+    }
+
+    @keyframes particleFly{
+      0%{transform:translate(0,0) scale(1);opacity:1;}
+      100%{transform:translate(var(--x),var(--y)) scale(.2);opacity:0;}
+    }
+
+    @media (max-width:390px){
+      body{
+        padding:4px 7px 6px;
+      }
+
+      .app{
+        max-width:382px;
+      }
+
+      .brand .title{
+        font-size:1.3rem;
+      }
+
+      .top-card{
+        min-height:39px;
+        font-size:.84rem;
+      }
+
+      .coin-card{
+        min-width:108px;
+      }
+
+      .menu-btn{
+        width:39px;
+        height:39px;
+      }
+
+      .vault{
+        padding:8px;
+      }
+
+      .door-grid{
+        grid-template-columns:1fr 56px;
+        min-height:110px;
+      }
+
+      .cell{
+        width:34px;
+        height:56px;
+        font-size:1.35rem;
+      }
+
+      .wheel{
+        width:56px;
+        height:56px;
+      }
+
+      .spoke{
+        height:16px;
+      }
+
+      .stat{
+        min-height:32px;
+        font-size:.66rem;
+      }
+
+      .key{
+        min-height:42px;
+        font-size:1.08rem;
+      }
+
+      .row{
+        padding:8px 9px;
+      }
+
+      .code{
+        font-size:.88rem;
+      }
+
+      .tags{
+        font-size:.78rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="overlay show" id="landing-overlay">
-    <div class="landing">
-      <div class="big-safe">🔐</div>
-      <h2>SAFE PRO</h2>
-      <div class="tag">Ты — взломщик сейфов.<br>Подбирай коды и зарабатывай монеты! 🪙</div>
-      <div class="features">
-        <div class="feat"><span class="ic">🎯</span><span class="tx"><b>Угадай код</b> из 4 разных цифр</span></div>
-        <div class="feat"><span class="ic">🕵️</span><span class="tx"><b>Подсказки</b> помогут вычислить код</span></div>
-        <div class="feat"><span class="ic">🪙</span><span class="tx">Взломай быстрее — <b>больше монет!</b></span></div>
+  <div class="overlay show" id="landingOverlay">
+    <div class="card landing">
+      <div class="hero-logo">🔐</div>
+      <h1>SAFE PRO</h1>
+      <p>
+        Угадай код сейфа из <b>4 разных цифр</b>.<br>
+        После каждой попытки ты получаешь подсказки и приближаешься к взлому.
+      </p>
+
+      <div class="landing-feats">
+        <div class="lf"><b>✅ Цифра на месте</b> — цифра угадана и стоит правильно.</div>
+        <div class="lf"><b>🔸 Цифра есть</b> — цифра есть в коде, но стоит не там.</div>
       </div>
-      <button class="play-btn" onclick="startGame()">▶ ИГРАТЬ</button>
-      <span class="rules-link" onclick="openRules()">📖 Как играть / Правила</span>
-    </div>
-  </div>
 
-  <h1>🔐 SAFE PRO</h1>
-  <div class="coins" id="coins">🪙 <span id="coinCount">0</span></div>
-  <div class="topbar">
-    <div class="chip">Попытка: <b id="tries">0</b></div>
-    <div class="chip">⏱️ <b id="timer">0с</b></div>
-    <div class="chip">🏆 <b id="best">—</b></div>
-    <button class="help" onclick="openRules()">?</button>
-  </div>
+      <button class="cta" onclick="startGame()">▶ Начать</button>
 
-  <div class="safe-wrap">
-    <div class="safe" id="safe">
-      <span class="bolt tl"></span><span class="bolt tr"></span><span class="bolt bl"></span><span class="bolt br"></span>
-      <div class="display" id="cells">
-        <div class="cell" data-i="0"></div>
-        <div class="cell" data-i="1"></div>
-        <div class="cell" data-i="2"></div>
-        <div class="cell" data-i="3"></div>
+      <div class="mini-row">
+        <button class="ghost" onclick="openRules()">📖 Правила</button>
+        <button class="ghost" onclick="openNameModal()">👤 Имя</button>
       </div>
-      <div class="handle" id="handle"></div>
-      <div class="treasure">💰💎🪙<small id="reward"></small></div>
     </div>
   </div>
 
-  <div class="warn" id="warn">⚠️ Все 4 цифры должны быть разными!</div>
-
-  <div class="keypad" id="keypad">
-    <div class="key" data-k="1">1</div>
-    <div class="key" data-k="2">2</div>
-    <div class="key" data-k="3">3</div>
-    <div class="key" data-k="4">4</div>
-    <div class="key" data-k="5">5</div>
-    <div class="key" data-k="6">6</div>
-    <div class="key" data-k="7">7</div>
-    <div class="key" data-k="8">8</div>
-    <div class="key" data-k="9">9</div>
-    <div class="key del" data-k="del">⌫</div>
-    <div class="key" data-k="0">0</div>
-    <div class="key act" data-k="go">🔓</div>
-  </div>
-
-  <div class="list-title">📋 ТВОИ ПОПЫТКИ</div>
-  <div class="list" id="list"></div>
-
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <h2>📖 Как играть</h2>
-      <p>Компьютер загадал секретный код из <b>4 разных цифр</b>. Угадай его! 🔓</p>
-      <div class="hint-box">💡 Цифры от <b>0 до 9</b>. Ноль <b>участвует</b>! Все 4 цифры — <b>разные</b>.</div>
-      <h3>🎯 Подсказки</h3>
+  <div class="overlay" id="rulesOverlay">
+    <div class="card modal">
+      <h2>📖 Правила</h2>
+      <p>Компьютер загадывает код из <b>4 разных цифр</b>. Твоя задача — открыть сейф за минимальное количество попыток.</p>
+      <h3>Подсказки</h3>
       <ul>
-        <li><span class="right">✅ (жёлтое)</span> — цифра угадана <b>и на своём месте</b></li>
-        <li><span class="near">🔸 (оранжевое)</span> — цифра есть, но <b>на другом месте</b></li>
+        <li><span class="right">✅</span> — цифра стоит на правильном месте</li>
+        <li><span class="near">🔸</span> — цифра есть в коде, но находится не там</li>
       </ul>
-      <h3>💡 Пример</h3>
-      <div class="ex">Код: <b>1234</b> · Ввёл: <b>1435</b><br>Результат: <span class="right">✅ 1</span> <span class="near">🔸 2</span></div>
-      <h3>🧠 Стратегии</h3>
+      <h3>Награда</h3>
       <ul>
-        <li>Начни с <b>1234</b> и <b>5670</b> — узнаешь цифры.</li>
-        <li>Если ✅+🔸 = 4 — <b>все цифры верные</b>, ищи порядок!</li>
-        <li>Дали 0 подсказок — <b>вычеркни</b> эти цифры.</li>
+        <li>1–3 попытки → <b>500</b> 🪙</li>
+        <li>4–7 попыток → <b>250</b> 🪙</li>
+        <li>8+ попыток → <b>100</b> 🪙</li>
       </ul>
-      <h3>🪙 Монеты за взлом</h3>
-      <ul>
-        <li>За <b>1–3</b> попытки → 🪙 <b>500</b> (МАСТЕР!)</li>
-        <li>За <b>4–7</b> → 🪙 <b>250</b></li>
-        <li>За <b>8+</b> → 🪙 <b>100</b></li>
-      </ul>
-      <div class="hint-box">🏆 Монеты копятся! Собери как можно больше. 💰</div>
-      <button class="close" onclick="closeRules()">Понятно! 🔓</button>
+      <button class="close-btn" onclick="closeRules()">Понятно</button>
     </div>
   </div>
+
+  <div class="overlay" id="nameOverlay">
+    <div class="card modal">
+      <h2>👤 Имя игрока</h2>
+      <p>Введи имя, которое будет отображаться сверху.</p>
+      <input class="input" type="text" id="nameInput" maxlength="16" placeholder="Например: Вася" />
+      <button class="close-btn" onclick="savePlayerName()">Сохранить</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="statsOverlay">
+    <div class="card modal">
+      <h2>📊 Статистика</h2>
+      <div class="line"><span>Имя</span><b id="statsName">Игрок</b></div>
+      <div class="line"><span>Ранг</span><b id="statsRank">Новичок</b></div>
+      <div class="line"><span>Монеты</span><b id="statsCoins">0</b></div>
+      <div class="line"><span>Сыграно игр</span><b id="statsGames">0</b></div>
+      <div class="line"><span>Побед</span><b id="statsWins">0</b></div>
+      <div class="line"><span>Лучший результат</span><b id="statsBest">—</b></div>
+      <div class="line"><span>Средние попытки</span><b id="statsAvg">—</b></div>
+      <div class="line"><span>Последний бонус</span><b id="statsDaily">—</b></div>
+      <button class="close-btn" onclick="closeStats()">Закрыть</button>
+    </div>
+  </div>
+
+  <div class="win-overlay" id="winOverlay">
+    <div class="win-card">
+      <div style="font-size:3rem;margin-bottom:8px;">💰✨🔓</div>
+      <h2>СЕЙФ ОТКРЫТ</h2>
+      <div class="rank-chip" id="winRank">Ранг: Новичок</div>
+      <p id="winText">Ты справился.</p>
+
+      <div class="win-stats">
+        <div class="win-box">
+          <div class="k">Попытки</div>
+          <div class="v" id="winTries">0</div>
+        </div>
+        <div class="win-box">
+          <div class="k">Время</div>
+          <div class="v" id="winTime">0с</div>
+        </div>
+        <div class="win-box">
+          <div class="k">Награда</div>
+          <div class="v" id="winReward">0 🪙</div>
+        </div>
+        <div class="win-box">
+          <div class="k">Побед всего</div>
+          <div class="v" id="winWins">0</div>
+        </div>
+      </div>
+
+      <div class="win-actions">
+        <button class="ghost" onclick="closeWinOverlay()">Закрыть</button>
+        <button class="cta" onclick="playAgain()">Новая игра</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" id="menuSheet">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">⚙️ Меню</div>
+
+      <div class="menu-grid">
+        <button class="menu-item" onclick="newGame(); closeMenu();">
+          <div class="t">🔄 Новая игра</div>
+          <div class="s">Сгенерировать новый код</div>
+        </button>
+
+        <button class="menu-item" onclick="openNameModal(); closeMenu();">
+          <div class="t">👤 Сменить имя</div>
+          <div class="s">Обновить имя игрока</div>
+        </button>
+
+        <button class="menu-item" onclick="openRules(); closeMenu();">
+          <div class="t">📖 Правила</div>
+          <div class="s">Посмотреть подсказки</div>
+        </button>
+
+        <button class="menu-item" onclick="claimDailyBonus()">
+          <div class="t">🎁 Ежедневный бонус</div>
+          <div class="s" id="dailyStatus">Проверить доступность бонуса</div>
+        </button>
+      </div>
+
+      <div class="line"><span>Имя</span><b id="menuPlayerName">Игрок</b></div>
+      <div class="line"><span>Ранг</span><b id="menuRank">Новичок</b></div>
+      <div class="line"><span>Рекорд</span><b id="menuBest">—</b></div>
+      <div class="line"><span>Побед / Игр</span><b id="menuStatsShort">0 / 0</b></div>
+
+      <div class="line">
+        <span>Звук</span>
+        <button class="switch on" id="soundToggle" onclick="toggleSound()"></button>
+      </div>
+
+      <div class="menu-grid">
+        <button class="menu-item" onclick="showStats()">
+          <div class="t">📊 Статистика</div>
+          <div class="s">Твой прогресс и результаты</div>
+        </button>
+
+        <button class="menu-item" onclick="resetProgress()">
+          <div class="t">🧹 Сбросить всё</div>
+          <div class="s">Удалить весь прогресс</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="particle-layer" id="particleLayer"></div>
+
+  <div class="app">
+    <div class="brand">
+      <div class="logo">🔐</div>
+      <div class="title">SAFE PRO</div>
+    </div>
+
+    <div class="topbar">
+      <div class="top-card">👤 <b id="playerName">Игрок</b></div>
+      <div class="top-card coin-card">🪙 <span id="coinCount">0</span></div>
+      <button class="menu-btn" onclick="toggleMenu()">⚙️</button>
+    </div>
+
+    <div class="screen">
+      <div class="vault" id="safeBox">
+        <span class="rivet r1"></span>
+        <span class="rivet r2"></span>
+        <span class="rivet r3"></span>
+        <span class="rivet r4"></span>
+        <span class="rivet r5"></span>
+        <span class="rivet r6"></span>
+
+        <div class="inside">
+          <div class="inside-glow"></div>
+          <div class="loot">
+            <div class="emoji">💎🪙💰</div>
+            <div class="text" id="rewardText">+0 монет</div>
+          </div>
+        </div>
+
+        <div class="vault-inner">
+          <div class="vault-door">
+            <div class="hinge"></div>
+
+            <div class="door-grid">
+              <div class="display-wrap">
+                <div class="display">
+                  <div class="cell" data-i="0"></div>
+                  <div class="cell" data-i="1"></div>
+                  <div class="cell" data-i="2"></div>
+                  <div class="cell" data-i="3"></div>
+                </div>
+              </div>
+
+              <div class="wheel">
+                <span class="spoke s1"></span>
+                <span class="spoke s2"></span>
+                <span class="spoke s3"></span>
+                <span class="spoke s4"></span>
+                <span class="spoke s5"></span>
+                <span class="spoke s6"></span>
+              </div>
+            </div>
+
+            <div class="stats">
+              <div class="stat">Попытка <b id="tries">0</b></div>
+              <div class="stat">Время <b id="timer">0с</b></div>
+              <div class="stat">Рекорд <b id="best">—</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warn" id="warn">⚠️ Все 4 цифры должны быть разными</div>
+
+      <div class="keypad" id="keypad">
+        <div class="key" data-k="1">1</div>
+        <div class="key" data-k="2">2</div>
+        <div class="key" data-k="3">3</div>
+        <div class="key" data-k="4">4</div>
+        <div class="key" data-k="5">5</div>
+        <div class="key" data-k="6">6</div>
+        <div class="key" data-k="7">7</div>
+        <div class="key" data-k="8">8</div>
+        <div class="key" data-k="9">9</div>
+        <div class="key del" data-k="del">⌫</div>
+        <div class="key" data-k="0">0</div>
+        <div class="key go" data-k="go">🔓</div>
+      </div>
+
+      <div class="history">
+        <div class="history-head">📋 ТВОИ ПОПЫТКИ</div>
+        <div class="list" id="list"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
-  let secret="",tries=0,startTime=0,timerId=null,running=false;
-  let digits=["","","",""];
-  let activeCell=0;
-  const cells=document.querySelectorAll(".cell");
-  const safe=document.getElementById("safe");
-  const handle=document.getElementById("handle");
-  const warn=document.getElementById("warn");
-  let handleRot=0;
+    let secret = [];
+    let guess = ["", "", "", ""];
+    let active = 0;
+    let tries = 0;
+    let timer = 0;
+    let timerInt = null;
+    let gameStarted = false;
 
-  let best=localStorage.getItem("safeBest");
-  document.getElementById("best").textContent=best?best+" поп.":"—";
-  let coins=parseInt(localStorage.getItem("safeCoins")||"0");
-  document.getElementById("coinCount").textContent=coins;
+    const cells = document.querySelectorAll(".cell");
+    const list = document.getElementById("list");
+    const triesEl = document.getElementById("tries");
+    const timerEl = document.getElementById("timer");
+    const bestEl = document.getElementById("best");
+    const warn = document.getElementById("warn");
+    const safeBox = document.getElementById("safeBox");
+    const rewardText = document.getElementById("rewardText");
 
-  function addCoins(n){
-    coins+=n;
-    localStorage.setItem("safeCoins",coins);
-    document.getElementById("coinCount").textContent=coins;
-    let c=document.getElementById("coins");
-    c.classList.remove("bump");void c.offsetWidth;c.classList.add("bump");
-  }
+    const landingOverlay = document.getElementById("landingOverlay");
+    const rulesOverlay = document.getElementById("rulesOverlay");
+    const nameOverlay = document.getElementById("nameOverlay");
+    const statsOverlay = document.getElementById("statsOverlay");
+    const winOverlay = document.getElementById("winOverlay");
+    const menuSheet = document.getElementById("menuSheet");
 
-  let actx=null;
-  function beep(f,d,t){
-    try{
-      if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();
-      let o=actx.createOscillator(),g=actx.createGain();
-      o.connect(g);g.connect(actx.destination);
-      o.type=t||"square";o.frequency.value=f;
-      g.gain.setValueAtTime(0.06,actx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);
-      o.start();o.stop(actx.currentTime+d);
-    }catch(e){}
-  }
-  function clickSound(){beep(220+Math.random()*60,0.08,"square");}
-  function winSound(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,0.3,"sine"),i*120));}
-  function coinSound(){[880,1200].forEach((f,i)=>setTimeout(()=>beep(f,0.12,"sine"),i*80));}
-  function errSound(){beep(120,0.3,"sawtooth");}
+    const playerNameEl = document.getElementById("playerName");
+    const coinCountEl = document.getElementById("coinCount");
+    const nameInput = document.getElementById("nameInput");
+    const menuPlayerName = document.getElementById("menuPlayerName");
+    const menuBest = document.getElementById("menuBest");
+    const menuRank = document.getElementById("menuRank");
+    const menuStatsShort = document.getElementById("menuStatsShort");
+    const soundToggle = document.getElementById("soundToggle");
+    const dailyStatus = document.getElementById("dailyStatus");
 
-  function startGame(){
-    document.getElementById("landing-overlay").classList.remove("show");
-    newGame();
-  }
-  function openRules(){document.getElementById("overlay").classList.add("show");}
-  function closeRules(){document.getElementById("overlay").classList.remove("show");}
+    const statsName = document.getElementById("statsName");
+    const statsRank = document.getElementById("statsRank");
+    const statsCoins = document.getElementById("statsCoins");
+    const statsGames = document.getElementById("statsGames");
+    const statsWins = document.getElementById("statsWins");
+    const statsBest = document.getElementById("statsBest");
+    const statsAvg = document.getElementById("statsAvg");
+    const statsDaily = document.getElementById("statsDaily");
 
-  cells.forEach(c=>{
-    c.addEventListener("click",()=>{
-      activeCell=+c.dataset.i;
-      render();
-    });
-  });
+    const winRank = document.getElementById("winRank");
+    const winText = document.getElementById("winText");
+    const winTries = document.getElementById("winTries");
+    const winTime = document.getElementById("winTime");
+    const winReward = document.getElementById("winReward");
+    const winWins = document.getElementById("winWins");
 
-  document.getElementById("keypad").addEventListener("click",e=>{
-    let k=e.target.closest(".key");
-    if(!k)return;
-    let v=k.dataset.k;
-    if(v==="go"){check();return;}
-    if(v==="del"){
-      if(digits[activeCell]!==""){digits[activeCell]="";}
-      else if(activeCell>0){activeCell--;digits[activeCell]="";}
-      render();
-      return;
-    }
-    digits[activeCell]=v;
-    if(activeCell<3)activeCell++;
-    handleRot+=45;handle.style.transform=`rotate(${handleRot}deg)`;
-    clickSound();
-    render();
-  });
+    const particleLayer = document.getElementById("particleLayer");
 
-  function render(){
-    cells.forEach((c,i)=>{
-      c.textContent=digits[i]||"";
-      c.classList.toggle("active",i===activeCell);
-    });
-    let filled=digits.filter(d=>d!=="");
-    if(new Set(filled).size!==filled.length){
-      warn.textContent="⚠️ Все 4 цифры должны быть разными!";
-      warn.classList.add("show");
-    }else warn.classList.remove("show");
-  }
+    let coins = parseInt(localStorage.getItem("safeCoins") || "0", 10);
+    let soundEnabled = localStorage.getItem("safeSound");
+    soundEnabled = soundEnabled === null ? true : soundEnabled === "true";
 
-  function startTimer(){
-    startTime=Date.now();running=true;
-    timerId=setInterval(()=>{
-      document.getElementById("timer").textContent=Math.floor((Date.now()-startTime)/1000)+"с";
-    },500);
-  }
+    let stats = {
+      games: parseInt(localStorage.getItem("safeGames") || "0", 10),
+      wins: parseInt(localStorage.getItem("safeWins") || "0", 10),
+      totalWinTries: parseInt(localStorage.getItem("safeTotalWinTries") || "0", 10),
+      lastDaily: localStorage.getItem("safeLastDaily") || ""
+    };
 
-  function newGame(){
-    let pool=[0,1,2,3,4,5,6,7,8,9];
-    secret="";
-    for(let i=0;i<4;i++){
-      let idx=Math.floor(Math.random()*pool.length);
-      secret+=pool[idx];
-      pool.splice(idx,1);
-    }
-    tries=0;
-    digits=["","","",""];
-    activeCell=0;
-    running=false;
-    handleRot=0;
-    if(timerId)clearInterval(timerId);
-    document.getElementById("tries").textContent="0";
-    document.getElementById("timer").textContent="0с";
-    document.getElementById("list").innerHTML="";
-    safe.classList.remove("open","alarm");
-    handle.style.transform="rotate(0deg)";
-    render();
-  }
-    function check(){
-    let g=digits.join("");
-    if(g.length<4){
-      warn.textContent="⚠️ Введи все 4 цифры!";
-      warn.classList.add("show");
-      errSound();
-      return;
-    }
-    if(new Set(digits).size!==4){
-      warn.textContent="⚠️ Все 4 цифры должны быть разными!";
-      warn.classList.add("show");
-      errSound();
-      safe.classList.add("alarm");
-      setTimeout(()=>safe.classList.remove("alarm"),300);
-      return;
-    }
-    warn.classList.remove("show");
-    if(!running)startTimer();
-    tries++;
-    document.getElementById("tries").textContent=tries;
-
-    let right=0,near=0;
-    for(let i=0;i<4;i++){
-      if(g[i]===secret[i])right++;
-      else if(secret.includes(g[i]))near++;
+    function saveStats() {
+      localStorage.setItem("safeGames", String(stats.games));
+      localStorage.setItem("safeWins", String(stats.wins));
+      localStorage.setItem("safeTotalWinTries", String(stats.totalWinTries));
+      localStorage.setItem("safeLastDaily", stats.lastDaily || "");
     }
 
-    if(right===4){
-      win(g);
-      return;
+    function getRank() {
+      if (stats.wins >= 50) return "Легенда";
+      if (stats.wins >= 25) return "Мастер";
+      if (stats.wins >= 12) return "Эксперт";
+      if (stats.wins >= 5) return "Взломщик";
+      return "Новичок";
     }
 
-    clickSound();
-    let row=document.createElement("div");
-    row.className="row";
-    row.innerHTML=`<span class="code">${g}</span>
-      <span class="tags">
-        <span class="right">✅ ${right}</span>
-        <span class="near">🔸 ${near}</span>
-      </span>`;
-    let list=document.getElementById("list");
-    list.insertBefore(row,list.firstChild);
-
-    digits=["","","",""];
-    activeCell=0;
-    render();
-  }
-
-  function win(g){
-    running=false;
-    if(timerId)clearInterval(timerId);
-    let secs=Math.floor((Date.now()-startTime)/1000);
-
-    safe.classList.add("open");
-    winSound();
-
-    let reward;
-    if(tries<=3)reward=500;
-    else if(tries<=7)reward=250;
-    else reward=100;
-
-    document.getElementById("reward").textContent=
-      `+${reward} 🪙 · ${tries} поп. · ${secs}с`;
-
-    setTimeout(()=>{addCoins(reward);coinSound();},700);
-
-    let row=document.createElement("div");
-    row.className="row win";
-    let rank=tries<=3?"🏆 МАСТЕР!":tries<=7?"👍 Отлично!":"✅ Взломано!";
-    row.innerHTML=`<span class="code">${g}</span>
-      <span class="msg">${rank} +${reward}🪙</span>`;
-    let list=document.getElementById("list");
-    list.insertBefore(row,list.firstChild);
-
-    if(!best||tries<parseInt(best)){
-      best=tries;
-      localStorage.setItem("safeBest",best);
-      document.getElementById("best").textContent=best+" поп.";
+    function formatDate(ts) {
+      if (!ts) return "—";
+      return new Date(ts).toLocaleDateString("ru-RU");
     }
 
-    setTimeout(()=>{
-      if(confirm(`🎉 Сейф взломан!\n\nКод: ${g}\nПопыток: ${tries}\nВремя: ${secs}с\nНаграда: +${reward} 🪙\n\nВзломать следующий?`)){
-        newGame();
+    function canClaimDaily() {
+      if (!stats.lastDaily) return true;
+      const last = new Date(stats.lastDaily);
+      const now = new Date();
+      return (
+        now.getFullYear() !== last.getFullYear() ||
+        now.getMonth() !== last.getMonth() ||
+        now.getDate() !== last.getDate()
+      );
+    }
+
+    function updateDailyStatus() {
+      dailyStatus.textContent = canClaimDaily()
+        ? "Бонус доступен сейчас"
+        : "Бонус уже забран сегодня";
+    }
+
+    function updateSoundButton() {
+      soundToggle.classList.toggle("on", soundEnabled);
+    }
+
+    function updateUI() {
+      const name = localStorage.getItem("safePlayerName") || "Игрок";
+      const best = localStorage.getItem("safeBest");
+      const rank = getRank();
+
+      playerNameEl.textContent = name;
+      menuPlayerName.textContent = name;
+      coinCountEl.textContent = coins;
+
+      bestEl.textContent = best ? best : "—";
+      menuBest.textContent = best ? best + " попыток" : "—";
+      menuRank.textContent = rank;
+      menuStatsShort.textContent = stats.wins + " / " + stats.games;
+
+      statsName.textContent = name;
+      statsRank.textContent = rank;
+      statsCoins.textContent = String(coins);
+      statsGames.textContent = String(stats.games);
+      statsWins.textContent = String(stats.wins);
+      statsBest.textContent = best ? best + " попыток" : "—";
+      statsAvg.textContent = stats.wins ? (stats.totalWinTries / stats.wins).toFixed(1) : "—";
+      statsDaily.textContent = formatDate(stats.lastDaily);
+
+      updateDailyStatus();
+      updateSoundButton();
+
+      if (nameInput) {
+        nameInput.value = name === "Игрок" ? "" : name;
       }
-    },1400);
-  }
-</script>
+    }
+
+    function generateCode() {
+      const digits = "0123456789".split("");
+      secret = [];
+      while (secret.length < 4) {
+        const i = Math.floor(Math.random() * digits.length);
+        secret.push(digits.splice(i, 1)[0]);
+      }
+    }
+
+    function renderCells() {
+      cells.forEach((cell, i) => {
+        cell.textContent = guess[i];
+        cell.classList.toggle("active", i === active);
+      });
+    }
+
+    function resetInput() {
+      guess = ["", "", "", ""];
+      active = 0;
+      renderCells();
+    }
+
+    function startTimer() {
+      clearInterval(timerInt);
+      timerInt = setInterval(() => {
+        timer++;
+        timerEl.textContent = timer + "с";
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInt);
+    }
+
+    function startGame() {
+      landingOverlay.classList.remove("show");
+      if (!localStorage.getItem("safePlayerName")) {
+        openNameModal();
+      }
+      if (!gameStarted) {
+        newGame();
+        gameStarted = true;
+      }
+    }
+
+    function newGame() {
+      generateCode();
+      resetInput();
+      tries = 0;
+      timer = 0;
+      triesEl.textContent = "0";
+      timerEl.textContent = "0с";
+      list.innerHTML = "";
+      rewardText.textContent = "+0 монет";
+      safeBox.classList.remove("open");
+      closeMenu();
+      closeWinOverlay();
+      updateUI();
+      startTimer();
+      pulse(440, 90, "triangle", 0.02);
+    }
+
+    function scoreGuess(code, input) {
+      let right = 0;
+      let near = 0;
+      for (let i = 0; i < 4; i++) {
+        if (input[i] === code[i]) right++;
+        else if (code.includes(input[i])) near++;
+      }
+      return { right, near };
+    }
+
+    function flashWarn(msg) {
+      warn.textContent = msg;
+      warn.classList.add("show");
+      setTimeout(() => warn.classList.remove("show"), 1600);
+      playErrorSound();
+      vibrate([40,30,40]);
+    }
+
+    function getRewardByTries(n) {
+      if (n <= 3) return 500;
+      if (n <= 7) return 250;
+      return 100;
+    }
+
+    function addCoins(amount) {
+      coins += amount;
+      localStorage.setItem("safeCoins", String(coins));
+      updateUI();
+    }
+
+    function vibrate(pattern) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    function pulse(freq = 440, duration = 120, type = "sine", volume = 0.03) {
+      if (!soundEnabled) return;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+
+      if (!window._safeAudioCtx) window._safeAudioCtx = new AudioCtx();
+      const ctx = window._safeAudioCtx;
+      if (ctx.state === "suspended") ctx.resume();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.value = volume;
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration / 1000);
+      osc.stop(ctx.currentTime + duration / 1000);
+    }
+
+    function playKeySound() {
+      pulse(660, 55, "triangle", 0.02);
+    }
+
+    function playDeleteSound() {
+      pulse(250, 70, "square", 0.02);
+    }
+
+    function playErrorSound() {
+      pulse(180, 110, "sawtooth", 0.025);
+      setTimeout(() => pulse(135, 110, "sawtooth", 0.02), 80);
+    }
+
+    function playOpenSound() {
+      pulse(250, 120, "sine", 0.03);
+      setTimeout(() => pulse(340, 150, "sine", 0.03), 90);
+    }
+
+    function playWinSound() {
+      pulse(520, 120, "triangle", 0.03);
+      setTimeout(() => pulse(680, 140, "triangle", 0.03), 110);
+      setTimeout(() => pulse(860, 180, "triangle", 0.03), 250);
+    }
+
+    function playBonusSound() {
+      pulse(720, 100, "triangle", 0.03);
+      setTimeout(() => pulse(900, 130, "triangle", 0.03), 90);
+    }
+
+    function burstParticles(count = 34) {
+      const rect = safeBox.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        const dx = (Math.random() * 2 - 1) * 220 + "px";
+        const dy = (Math.random() * 2 - 1) * 240 + "px";
+        const size = 4 + Math.random() * 8;
+
+        p.style.left = cx + "px";
+        p.style.top = cy + "px";
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        p.style.setProperty("--x", dx);
+        p.style.setProperty("--y", dy);
+        p.style.background = Math.random() > 0.5 ? "#ffd700" : "#ff9f0a";
+
+        particleLayer.appendChild(p);
+        setTimeout(() => p.remove(), 1100);
+      }
+    }
+
+    function openRules() {
+      rulesOverlay.classList.add("show");
+    }
+
+    function closeRules() {
+      rulesOverlay.classList.remove("show");
+    }
+
+    function openNameModal() {
+      nameOverlay.classList.add("show");
+      setTimeout(() => nameInput && nameInput.focus(), 100);
+    }
+
+    function closeNameModal() {
+      nameOverlay.classList.remove("show");
+    }
+
+    function savePlayerName() {
+      let value = (nameInput.value || "").trim();
+      if (!value) value = "Игрок";
+      value = value.slice(0, 16);
+      localStorage.setItem("safePlayerName", value);
+      updateUI();
+      closeNameModal();
+    }
+
+    function toggleMenu() {
+      menuSheet.classList.toggle("show");
+    }
+
+    function closeMenu() {
+      menuSheet.classList.remove("show");
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem("safeSound", String(soundEnabled));
+      updateSoundButton();
+      if (soundEnabled) pulse(760, 90, "triangle", 0.03);
+    }
+
+    function showStats() {
+      closeMenu();
+      updateUI();
+      statsOverlay.classList.add("show");
+    }
+
+    function closeStats() {
+      statsOverlay.classList.remove("show");
+    }
+
+    function claimDailyBonus() {
+      if (!canClaimDaily()) {
+        closeMenu();
+        flashWarn("🎁 Бонус уже получен сегодня");
+        return;
+      }
+
+      const bonus = 150;
+      stats.lastDaily = new Date().toISOString();
+      saveStats();
+      addCoins(bonus);
+      updateUI();
+      closeMenu();
+      playBonusSound();
+      vibrate([60,40,80]);
+
+      setTimeout(() => {
+        alert("🎁 Ежедневный бонус: +" + bonus + " монет");
+      }, 80);
+    }
+
+    function resetProgress() {
+      const ok = confirm("Сбросить весь прогресс?");
+      if (!ok) return;
+
+      [
+        "safeCoins",
+        "safeBest",
+        "safeGames",
+        "safeWins",
+        "safeTotalWinTries",
+        "safeLastDaily",
+        "safePlayerName",
+        "safeSound"
+      ].forEach((k) => localStorage.removeItem(k));
+
+      coins = 0;
+      soundEnabled = true;
+      stats = {
+        games: 0,
+        wins: 0,
+        totalWinTries: 0,
+        lastDaily: ""
+      };
+
+      updateUI();
+      closeMenu();
+      closeStats();
+      closeNameModal();
+      pulse(180, 120, "square", 0.03);
+    }
+
+    function showWinScreen(reward) {
+      const name = localStorage.getItem("safePlayerName") || "Игрок";
+      const rank = getRank();
+
+      winRank.textContent = "Ранг: " + rank;
+      winText.textContent = name + ", ты открыл сейф за " + tries + " попыток и " + timer + " секунд.";
+      winTries.textContent = String(tries);
+      winTime.textContent = timer + "с";
+      winReward.textContent = reward + " 🪙";
+      winWins.textContent = String(stats.wins);
+      winOverlay.classList.add("show");
+    }
+
+    function closeWinOverlay() {
+      winOverlay.classList.remove("show");
+    }
+
+    function playAgain() {
+      closeWinOverlay();
+      newGame();
+    }
+
+    function submitGuess() {
+      if (guess.includes("")) return flashWarn("⚠️ Введи 4 цифры");
+      if (new Set(guess).size < 4) return flashWarn("⚠️ Все цифры должны быть разными");
+
+      const input = guess.join("");
+      tries++;
+      triesEl.textContent = String(tries);
+
+      const result = scoreGuess(secret, guess);
+
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="code">${input}</div>
+        <div class="tags">
+          <span class="right">✅ ${result.right}</span>
+          <span class="near">🔸 ${result.near}</span>
+        </div>
+      `;
+      list.prepend(row);
+
+      if (result.right === 4) {
+        stopTimer();
+        const reward = getRewardByTries(tries);
+
+        stats.games++;
+        stats.wins++;
+        stats.totalWinTries += tries;
+        saveStats();
+
+        addCoins(reward);
+        rewardText.textContent = "+" + reward + " монет";
+
+        const bestScore = parseInt(localStorage.getItem("safeBest") || "999", 10);
+        if (tries < bestScore) {
+          localStorage.setItem("safeBest", String(tries));
+        }
+
+        updateUI();
+
+        row.classList.add("win");
+        row.innerHTML = `
+          <div class="code">${input}</div>
+          <div class="msg">ОТКРЫТО! +${reward} 🪙</div>
+        `;
+
+        safeBox.classList.add("open");
+        playOpenSound();
+        setTimeout(playWinSound, 240);
+        vibrate([120,60,120,60,180]);
+        burstParticles(42);
+
+        setTimeout(() => {
+          showWinScreen(reward);
+        }, 850);
+
+        return;
+      }
+
+      playErrorSound();
+      vibrate(40);
+      resetInput();
+    }
+
+    document.getElementById("keypad").addEventListener("click", (e) => {
+      const key = e.target.closest(".key");
+      if (!key) return;
+
+      const k = key.dataset.k;
+
+      if (k === "del") {
+        playDeleteSound();
+        if (guess[active]) {
+          guess[active] = "";
+        } else if (active > 0) {
+          active--;
+          guess[active] = "";
+        }
+        renderCells();
+        return;
+      }
+
+      if (k === "go") {
+        submitGuess();
+        return;
+      }
+
+      playKeySound();
+      guess[active] = k;
+      if (active < 3) active++;
+      renderCells();
+    });
+
+    cells.forEach((cell, i) => {
+      cell.addEventListener("click", () => {
+        active = i;
+        renderCells();
+        playKeySound();
+      });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (landingOverlay.classList.contains("show")) return;
+
+      if (/^[0-9]$/.test(e.key)) {
+        playKeySound();
+        guess[active] = e.key;
+        if (active < 3) active++;
+        renderCells();
+      } else if (e.key === "Backspace") {
+        playDeleteSound();
+        if (guess[active]) {
+          guess[active] = "";
+        } else if (active > 0) {
+          active--;
+          guess[active] = "";
+        }
+        renderCells();
+      } else if (e.key === "Enter") {
+        submitGuess();
+      } else if (e.key === "Escape") {
+        closeRules();
+        closeNameModal();
+        closeStats();
+        closeMenu();
+        closeWinOverlay();
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      const inMenu = e.target.closest("#menuSheet") || e.target.closest(".menu-btn");
+      if (!inMenu) closeMenu();
+    });
+
+    updateUI();
+    renderCells();
+
+    window.startGame = startGame;
+    window.openRules = openRules;
+    window.closeRules = closeRules;
+    window.openNameModal = openNameModal;
+    window.savePlayerName = savePlayerName;
+    window.toggleMenu = toggleMenu;
+    window.closeMenu = closeMenu;
+    window.toggleSound = toggleSound;
+    window.showStats = showStats;
+    window.closeStats = closeStats;
+    window.claimDailyBonus = claimDailyBonus;
+    window.resetProgress = resetProgress;
+    window.closeWinOverlay = closeWinOverlay;
+    window.playAgain = playAgain;
+    window.newGame = newGame;
+  </script>
 </body>
 </html>
