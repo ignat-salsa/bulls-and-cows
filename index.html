@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAFE PRO</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{font-family:-apple-system,"SF Pro",sans-serif;background:radial-gradient(circle at 50% -10%,#1a1a2e,#08080d);color:#fff;height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px 16px;overflow:hidden;}
+  h1{font-size:1.9em;font-weight:800;letter-spacing:3px;background:linear-gradient(90deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .sub{color:#666;font-size:.75em;margin:2px 0 10px;letter-spacing:2px;}
+  .coins{background:linear-gradient(90deg,#3a2f0a,#4a3a0f);border:1.5px solid #ffd700;border-radius:14px;padding:8px 20px;font-size:1.1em;font-weight:800;color:#ffd700;margin-bottom:12px;box-shadow:0 0 20px rgba(255,215,0,.2);}
+  .coins.bump{animation:bump .4s ease;}
+  @keyframes bump{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  .topbar{display:flex;gap:8px;margin-bottom:12px;align-items:center;}
+  .chip{background:#15151f;border:1px solid #2a2a3a;border-radius:10px;padding:8px 12px;font-size:.8em;color:#999;}
+  .chip b{color:#ffd700;}
+  .help{background:#15151f;border:1px solid #2a2a3a;border-radius:50%;width:36px;height:36px;color:#ffd700;font-size:1.1em;cursor:pointer;}
+  .help:hover{border-color:#ffd700;}
+  .safe{width:150px;height:150px;border-radius:20px;flex-shrink:0;background:linear-gradient(145deg,#43434f,#20202a);border:3px solid #5a5a68;box-shadow:0 8px 30px rgba(0,0,0,.7),inset 0 2px 10px rgba(255,255,255,.12),inset 0 -4px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:14px;transition:border-color .3s,box-shadow .3s;}
+  .bolt{position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#888,#444);box-shadow:inset 0 1px 1px rgba(255,255,255,.4);}
+  .bolt.tl{top:10px;left:10px;}.bolt.tr{top:10px;right:10px;}.bolt.bl{bottom:10px;left:10px;}.bolt.br{bottom:10px;right:10px;}
+  .dial{width:74px;height:74px;border-radius:50%;background:conic-gradient(#eee,#999,#eee,#999,#eee);border:6px solid #3a3a3a;position:relative;box-shadow:inset 0 0 14px rgba(0,0,0,.6),0 0 0 3px #555;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+  .dial::before{content:"";position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle,#ccc,#777);box-shadow:inset 0 0 8px rgba(0,0,0,.4);}
+  .dial::after{content:"";position:absolute;top:4px;left:50%;width:4px;height:20px;background:#c00;transform:translateX(-50%);border-radius:2px;z-index:2;}
+  .handle{position:absolute;right:-10px;top:50%;width:32px;height:12px;background:linear-gradient(#777,#444);border-radius:6px;transform:translateY(-50%);box-shadow:2px 2px 5px rgba(0,0,0,.5);}
+  .safe.open{background:linear-gradient(145deg,#2a4a2a,#1a3a1a);border-color:#ffd700;box-shadow:0 0 55px rgba(255,215,0,.5);}
+  .safe.open .dial{transform:rotate(1080deg);}
+  .safe.alarm{border-color:#ff3b30;box-shadow:0 0 40px rgba(255,59,48,.6);}
+  .treasure{display:none;font-size:1.8em;text-align:center;}
+  .treasure small{display:block;font-size:.4em;color:#ffd700;margin-top:4px;letter-spacing:1px;}
+  .safe.open .treasure{display:block;animation:pop .6s ease;}
+  .safe.open .dial,.safe.open .handle,.safe.open .bolt{display:none;}
+  @keyframes pop{0%{transform:scale(0);}70%{transform:scale(1.3);}100%{transform:scale(1);}}
+  .cells{display:flex;gap:8px;margin-bottom:6px;}
+  .cell{width:46px;height:54px;border-radius:10px;background:#15151f;border:2px solid #333;display:flex;align-items:center;justify-content:center;font-size:1.6em;font-weight:700;color:#ffd700;transition:.2s;}
+  .cell.active{border-color:#ffd700;box-shadow:0 0 12px rgba(255,215,0,.3);}
+  .warn{color:#ff3b30;font-size:.78em;height:16px;margin-bottom:6px;opacity:0;transition:.2s;}
+  .warn.show{opacity:1;}
+  .btns{display:flex;gap:10px;margin-bottom:12px;}
+  button{font-size:.88em;font-weight:700;padding:11px 22px;border:none;border-radius:11px;cursor:pointer;letter-spacing:1px;transition:.2s;}
+  .go{background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;}
+  .go:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(255,140,0,.5);}
+  .new{background:#1a1a25;color:#888;}.new:hover{color:#fff;}
+  .list-title{color:#555;font-size:.7em;letter-spacing:2px;align-self:flex-start;max-width:340px;margin:0 auto 6px;width:100%;padding-left:4px;}
+  .list{width:100%;max-width:340px;flex:1;overflow-y:auto;padding-right:4px;}
+  .list::-webkit-scrollbar{width:6px;}
+  .list::-webkit-scrollbar-thumb{background:#2a2a3a;border-radius:3px;}
+  .row{display:flex;justify-content:space-between;align-items:center;background:#15151f;border:1px solid #23232f;border-radius:10px;padding:11px 16px;margin-bottom:7px;animation:slide .3s ease;}
+  @keyframes slide{from{opacity:0;transform:translateY(-8px);}to{opacity:1;}}
+  .code{font-size:1.3em;font-weight:700;letter-spacing:5px;}
+  .tags{display:flex;gap:12px;font-size:.85em;}
+  .right{color:#ffd700;font-weight:700;}
+  .near{color:#ff8c00;font-weight:700;}
+  .win{border-color:#ffd700;background:#2a2410;}
+  .win .code{color:#ffd700;}
+  .win .msg{font-size:.85em;color:#ffd700;font-weight:700;letter-spacing:0;}
+  input.hidden{position:absolute;opacity:0;pointer-events:none;}
+  .overlay{position:fixed;inset:0;background:rgba(5,5,10,.95);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.show{display:flex;animation:fade .4s;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .landing{text-align:center;max-width:420px;animation:up .5s ease;}
+  @keyframes up{from{opacity:0;transform:translateY(20px);}to{opacity:1;}}
+  .landing .big-safe{font-size:4.5em;margin-bottom:8px;animation:float 3s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .landing h2{font-size:2.4em;font-weight:900;letter-spacing:4px;margin-bottom:6px;background:linear-gradient(90deg,#ffd700,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .landing .tag{color:#aaa;font-size:1em;margin-bottom:20px;line-height:1.5;}
+  .features{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .feat{background:#15151f;border:1px solid #23232f;border-radius:12px;padding:13px 18px;text-align:left;display:flex;gap:12px;align-items:center;}
+  .feat .ic{font-size:1.5em;}.feat .tx{font-size:.9em;color:#ccc;}.feat .tx b{color:#fff;}
+  .play-btn{font-size:1.3em;font-weight:800;padding:16px 60px;letter-spacing:2px;background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;border-radius:14px;box-shadow:0 0 30px rgba(255,140,0,.4);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(255,140,0,.4);}50%{box-shadow:0 0 45px rgba(255,140,0,.7);}}
+  .rules-link{display:block;margin-top:14px;color:#777;font-size:.85em;cursor:pointer;text-decoration:underline;}
+  .rules-link:hover{color:#ffd700;}
+  .modal{background:#15151f;border:2px solid #ffd700;border-radius:20px;max-width:400px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;text-align:left;animation:up .4s ease;}
+  .modal h2{color:#ffd700;margin-bottom:14px;font-size:1.4em;}
+  .modal h3{color:#ff8c00;margin:18px 0 8px;font-size:1.05em;}
+  .modal p,.modal li{color:#ccc;line-height:1.6;font-size:.92em;margin-bottom:6px;}
+  .modal ul{padding-left:20px;}
+  .modal .close{width:100%;margin-top:20px;background:linear-gradient(90deg,#ffd700,#ff8c00);color:#1a1a1a;}
+  .ex{background:#0d0d14;border-radius:10px;padding:12px;margin:8px 0;font-size:.88em;}
+  .hint-box{background:#1a2410;border:1px solid #3a4a1a;border-radius:10px;padding:10px 14px;margin:8px 0;font-size:.88em;color:#c8e0a0;}
+</style>
+</head>
+<body>
+  <div class="overlay show" id="landing-overlay">
+    <div class="landing">
+      <div class="big-safe">🔐</div>
+      <h2>SAFE PRO</h2>
+      <div class="tag">Ты — взломщик сейфов.<br>Подбирай коды и зарабатывай монеты! 🪙</div>
+      <div class="features">
+        <div class="feat"><span class="ic">🎯</span><span class="tx"><b>Угадай код</b> из 4 разных цифр</span></div>
+        <div class="feat"><span class="ic">🕵️</span><span class="tx"><b>Подсказки</b> помогут вычислить код</span></div>
+        <div class="feat"><span class="ic">🪙</span><span class="tx">Взломай быстрее — <b>больше монет!</b></span></div>
+      </div>
+      <button class="play-btn" onclick="startGame()">▶ ИГРАТЬ</button>
+      <span class="rules-link" onclick="openRules()">📖 Как играть / Правила</span>
+    </div>
+  </div>
+
+  <h1>🔐 SAFE PRO</h1>
+  <div class="sub">ВЗЛОМАЙ КОД ИЗ 4 ЦИФР</div>
+  <div class="coins" id="coins">🪙 <span id="coinCount">0</span></div>
+  <div class="topbar">
+    <div class="chip">Попытка: <b id="tries">0</b></div>
+    <div class="chip">⏱️ <b id="timer">0с</b></div>
+    <div class="chip">🏆 <b id="best">—</b></div>
+    <button class="help" onclick="openRules()">?</button>
+  </div>
+  <div class="safe" id="safe">
+    <span class="bolt tl"></span><span class="bolt tr"></span><span class="bolt bl"></span><span class="bolt br"></span>
+    <div class="dial" id="dial"></div>
+    <div class="handle"></div>
+    <div class="treasure">💰💎🪙<small id="reward"></small></div>
+  </div>
+  <div class="cells" id="cells" onclick="focusInput()">
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+  </div>
+  <div class="warn" id="warn">⚠️ Все 4 цифры должны быть разными!</div>
+  <input id="guess" class="hidden" maxlength="4" inputmode="numeric">
+  <div class="btns">
+    <button class="go" onclick="check()">🔓 ВЗЛОМАТЬ</button>
+    <button class="new" onclick="newGame()">Новый сейф</button>
+  </div>
+  <div class="list-title">📋 ТВОИ ПОПЫТКИ</div>
+  <div class="list" id="list"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>📖 Как играть</h2>
+      <p>Компьютер загадал секретный код из <b>4 разных цифр</b>. Угадай его! 🔓</p>
+      <div class="hint-box">💡 Цифры от <b>0 до 9</b>. Ноль <b>участвует</b>! Все 4 цифры — <b>разные</b>.</div>
+      <h3>🎯 Подсказки</h3>
+      <ul>
+        <li><span class="right">✅ (жёлтое)</span> — цифра угадана <b>и на своём месте</b></li>
+        <li><span class="near">🔸 (оранжевое)</span> — цифра есть, но <b>на другом месте</b></li>
+      </ul>
+      <h3>💡 Пример</h3>
+      <div class="ex">Код: <b>1234</b> · Ввёл: <b>1435</b><br>Результат: <span class="right">✅ 1</span> <span class="near">🔸 2</span></div>
+      <h3>🧠 Стратегии</h3>
+      <ul>
+        <li>Начни с <b>1234</b> и <b>5670</b> — узнаешь цифры.</li>
+        <li>Если ✅+🔸 = 4 — <b>все цифры верные</b>, ищи порядок!</li>
+        <li>Дали 0 подсказок — <b>вычеркни</b> эти цифры.</li>
+      </ul>
+      <h3>🪙 Монеты за взлом</h3>
+      <ul>
+        <li>За <b>1–3</b> попытки → 🪙 <b>500</b> (МАСТЕР!)</li>
+        <li>За <b>4–7</b> → 🪙 <b>250</b></li>
+        <li>За <b>8+</b> → 🪙 <b>100</b></li>
+      </ul>
+      <div class="hint-box">🏆 Монеты копятся! Собери как можно больше. 💰</div>
+      <button class="close" onclick="closeRules()">Понятно! 🔓</button>
+    </div>
+  </div>
+
+<script>
+  let secret="",tries=0,startTime=0,timerId=null,running=false;
+  const inp=document.getElementById("guess");
+  const cells=document.querySelectorAll(".cell");
+  const safe=document.getElementById("safe");
+  const dial=document.getElementById("dial");
+  const warn=document.getElementById("warn");
+  let best=localStorage.getItem("safeBest");
+  document.getElementById("best").textContent=best?best+" поп.":"—";
+  let coins=parseInt(localStorage.getItem("safeCoins")||"0");
+  document.getElementById("coinCount").textContent=coins;
+  function addCoins(n){coins+=n;localStorage.setItem("safeCoins",coins);document.getElementById("coinCount").textContent=coins;let c=document.getElementById("coins");c.classList.remove("bump");void c.offsetWidth;c.classList.add("bump");}
+  let actx=null;
+  function beep(f,d,t){try{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();let o=actx.createOscillator(),g=actx.createGain();o.connect(g);g.connect(actx.destination);o.type=t||"square";o.frequency.value=f;g.gain.setValueAtTime(0.06,actx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);o.start();o.stop(actx.currentTime+d);}catch(e){}}
+  function clickSound(){beep(220+Math.random()*60,0.08,"square");}
+  function winSound(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,0.3,"sine"),i*120));}
+  function coinSound(){[880,1200].forEach((f,i)=>setTimeout(()=>beep(f,0.12,"sine"),i*80));}
+  function errSound(){beep(120,0.3,"sawtooth");}
+  function startGame(){document.getElementById("landing-overlay").classList.remove("show");focusInput();}
+  function openRules(){document.getElementById("overlay").classList.add("show");}
+  function closeRules(){document.getElementById("overlay").classList.remove("show");focusInput();}
+  function focusInput(){inp.focus();}
+  inp.addEventListener("input",render);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+  function render(){
+    let v=inp.value.replace(/\D/g,"").slice(0,4);inp.value=v;
+    cells.forEach((c,i)=>{c.textContent=v[i]||"";c.classList.toggle("active",i===v.length);});
+    if(new Set(v).size!==v.length){warn.textContent="⚠️ Все 4 цифры должны быть разными!";warn.classList.add("show");}
+    else warn.classList.remove("show");
+    if(v.length){let last=+v[v.length-1];dial.style.transform=`rotate(${last*36}deg)`;clickSound();}
+    else dial.style.transform="rotate(0deg)";
+  }
+  function startTimer(){startTime=Date.now();running=true;timerId=setInterval(()=>{document.getElementById("timer").textContent=Math.floor((Date.now()-startTime)/1000)+"с";},500);}
+  function newGame(){
+    let d=[0,1,2,3,4,5,6,7,8,9];secret="";tries=0;
+    for(let i=0;i<4;i++){let x=Math.floor(Math.random()*d.length);secret+=d[x];d.splice(x,1);}
+    document.getElementById("list").innerHTML="";
+    document.getElementById("tries").textContent=0;
+    document.getElementById("timer").textContent="0с";
+    safe.classList.remove("open","alarm");dial.style.transform="rotate(0deg)";
+    clearInterval(timerId);running=false;inp.value="";render();focusInput();
+    console.log("Код сейфа:",secret);
+  }
+  function rewardCoins(t){if(t<=3)return 500;if(t<=7)return 250;return 100;}
+  function rewardText(t){if(t<=3)return "🪙 +500 — МАСТЕР!";if(t<=7)return "🪙 +250 монет";return "🪙 +100 монет";}
+  function check(){
+    let g=inp.value;
+    if(g.length!==4){warn.textContent="⚠️ Введи 4 цифры!";warn.classList.add("show");alarm();return;}
+    if(new Set(g).size!==4){warn.textContent="⚠️ Все 4 цифры должны быть разными!";warn.classList.add("show");alarm();return;}
+    if(!running)startTimer();
+    tries++;document.getElementById("tries").textContent=tries;
+    let r=0,n=0;
+    for(let i=0;i<4;i++){if(g[i]===secret[i])r++;else if(secret.includes(g[i]))n++;}
+    let list=document.getElementById("list"),html;
+    if(r===4){
+      clearInterval(timerId);running=false;
+      let secs=Math.floor((Date.now()-startTime)/1000);
+      let earned=rewardCoins(tries);
+      html=`<div class="row win"><span class="code">${g}</span><span class="msg">🎉 ${tries} поп. · 🪙+${earned}</span></div>`;
+      safe.classList.add("open");winSound();
+      document.getElementById("reward").textContent=rewardText(tries);
+      setTimeout(()=>{coinSound();addCoins(earned);},800);
+      if(!best||tries<best){best=tries;localStorage.setItem("safeBest",best);document.getElementById("best").textContent=best+" поп.";}
+    }else{
+      html=`<div class="row"><span class="code">${g}</span><div class="tags"><span class="right">✅ ${r}</span><span class="near">🔸 ${n}</span></div></div>`;
+      beep(660,0.1,"sine");
+    }
+    list.innerHTML=html+list.innerHTML;inp.value="";render();focusInput();
+  }
+  function alarm(){errSound();safe.classList.add("alarm");safe.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}],{duration:250});setTimeout(()=>safe.classList.remove("alarm"),400);}
+  newGame();
+</script>
+</body>
+</html>
