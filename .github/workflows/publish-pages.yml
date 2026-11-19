@@ -1,0 +1,46 @@
+name: Publish SAFE PRO
+
+on:
+  push:
+    branches:
+      - design/mobile-refresh
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the latest game files
+        uses: actions/checkout@v4
+        with:
+          ref: design/mobile-refresh
+
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare the game for publication
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+          touch _site/.nojekyll
+
+      - name: Upload the game
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publish the game
+        id: deployment
+        uses: actions/deploy-pages@v4
